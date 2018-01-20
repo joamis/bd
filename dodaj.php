@@ -1,57 +1,65 @@
 <?php
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-                $error = array();
+            $error = array();
 
-                $id_ksiazka=trim($_POST['id_ksiazka']);
-                $id_kategoria = trim($_POST['id_kategoria']);
-                $isbn=trim($_POST['isbn']);
-                $tytul = trim($_POST['tytul']);
-                $autor = trim($_POST['autor']);
-                $wydawnictwo = trim($_POST['wydawnictwo']);
+            $id_czytelnik = trim($_POST['id_czytelnik']);
+            $login = trim($_POST['login']);
+            $haslo = trim($_POST['haslo']);
+            $imie = trim($_POST['imie']);
+            $nazwisko = trim($_POST['nazwisko']);
+            $telefon = trim($_POST['telefon']);
+            $adres = trim($_POST['adres']);
 
+            
 
-
-                if (!isset($id_ksiazka) || empty($id_ksiazka)) {
-                        array_push($error, 'Prosze podac identyfikator ksiazki');
-                }else if(!isset($id_kategoria) || empty($id_kategoria)) {
-                        array_push($error, 'Prosze podac identyfikator kategorii');
-                }else if (!isset($isbn) || empty($isbn)){
-                        array_push($error, 'Prosze podac numer isbn');
-                }else if (!isset($tytul) || empty($tytul)){
-                        array_push($error, 'Prosze podac tytul');
-                }else if (!isset($autor) || empty($autor)){
-                        array_push($error, 'Prosze podac autora');
-                }else if (!isset($wydawnictwo) || empty($wydawnictwo)){
-                        array_push($error, 'Prosze podac wydawnictwo');
-                }
-
+            try {
 
                 if (count($error) == 0) {
 
-                        $query = 'INSERT INTO ksiazka (id_ksiazka, id_kategria, isbn, tytul, autor, wudawnictwo ) VALUES (:id_ksiazka, :id_kategoria, :isbn, :tutul, :autor, :wydawnictwo)';
+                    $query = 'INSERT INTO czytelnik (id_czytelnik, login, haslo, imie, nazwisko, telefon, adres ) 
+                          VALUES (:id_czytelnik, :login, :haslo, :imie, :nazwisko, :telefon, :adres)';
 
-                        if ($sth = $pdo->prepare($query)) {
-                                $sth->bindValue(':id_ksiazka', $id_ksiazka, PDO::PARAM_STR);
-                                $sth->bindValue(':id_kategoria', $id_kategoria, PDO::PARAM_STR);
-                                $sth->bindValue(':isbn', $isbn, PDO::PARAM_INT);
-                                $sth->bindValue(':tytul', $tytul, PDO::PARAM_STR);
-                                $sth->bindValue(':autor', $autor, PDO::PARAM_STR);
-                                $sth->bindValue(':wydawnictwo', $wydawnictwo, PDO::PARAM_STR);
+                    if ($sth = $pdo->prepare($query)) {
 
 
-                                if (!$sth->execute()) {
-                                        push_array($error, 'Błąd serwera');
-                                }
+                        $sth->bindValue(':id_czytelnik', $id_czytelnik, PDO::PARAM_INT);
+
+                        $sth->bindValue(':login', $login, PDO::PARAM_STR);
+
+                        $sth->bindValue(':haslo', $haslo, PDO::PARAM_STR);
+
+                        $sth->bindValue(':imie', $imie, PDO::PARAM_STR);
+
+                        $sth->bindValue(':nazwisko', $nazwisko, PDO::PARAM_STR);
+
+                        $sth->bindValue(':telefon', $telefon, PDO::PARAM_STR);
+
+                        $sth->bindValue(':adres', $adres, PDO::PARAM_STR);
+
+
+                        if (!$sth->execute()) {
+
+                            push_array($error, 'Błąd serwera');
+
                         }
 
+                    }
+
                 }
+
+            }
+
+            catch(PDOException $e) {
+                print $e->getMessage();
+            }
+
+
         }
 ?>
 
 
-
-<h3>Dodaj ksiazke</h3>
 
 <?php if (count($error) != 0): ?>
 	<ul>
@@ -61,27 +69,68 @@
 	</ul>
 <?php endif; ?>
 
-<form method="post" action="index.php?show=dodaj_ksiazke">
-	<label for="form-username">Tytuł</label>
-    <input type="text" name="tytul" class="form-control" id="tytul" placeholder="Tytuł" value="<?php echo $_POST['tytul'] ?>"><br>
-            
+
+
+<style>
+    input[type=text], select {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    input[type=submit] {
+        width: 100%;
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    input[type=submit]:hover {
+        background-color: #45a049;
+    }
+
+    div {
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        padding: 20px;
+    }
+
+</style>
+
+
+<h3>Dodaj czytelnika</h3>
+
+
+<form method="post" action="index.php?show=dodaj">
+	<label for="form-username">Identyfikator czytelnika</label>
+    <input type="text" name="id_czytelnik" class="form-control" id="id_czytelnik" value="<?php echo $_POST['id_czytelnik'] ?>"><br>
+
+    <label for="form-password">Login</label>
+    <input type="text" name="login" class="form-control" id="login" value="<?php echo $_POST['login'] ?>"><br>
              
-    <label for="form-password">Autor</label>
-    <input type="text" name="autor" class="form-control" id="autor" placeholder="Autor" value="<?php echo $_POST['autor'] ?>"><br>
-             
-    <label for="form-password">Wydawnictwo</label>
-    <input type="text" name="wydawnictwo" class="form-control" id="year" placeholder="Wydawnictwo" value="<?php echo $_POST['wydawnictwo'] ?>"><br>
+    <label for="form-password">Haslo</label>
+    <input type="text" name="haslo" class="form-control" id="haslo" value="<?php echo $_POST['haslo'] ?>"><br>
             
-    <label for="form-password">Isbn</label>
-    <input type="text" name="isbn" class="form-control" id="isbn" placeholder="Isbn" value="<?php echo $_POST['isbn'] ?>"><br>
+    <label for="form-password">Imie</label>
+    <input type="text" name="imie" class="form-control" id="imie" value="<?php echo $_POST['imie'] ?>"><br>
 
-    <label for="form-password">Identyfikator ksiazki</label>
-    <input type="text" name="id_ksiazka" class="form-control" id="id_ksiazka" placeholder="Identyfikator ksiazki" value="<?php echo $_POST['id_ksiazka'] ?>"><br>
+    <label for="form-password">Nazwisko</label>
+    <input type="text" name="nazwisko" class="form-control" id="nazwisko" value="<?php echo $_POST['nazwisko'] ?>"><br>
 
-    <label for="form-password">Identyfikator kategorii</label>
-    <input type="text" name="id_kategoria" class="form-control" id="id_kategoria" placeholder="id_kategoria" value="<?php echo $_POST['id_kategoria'] ?>"><br>
-	
+    <label for="form-password">Telefon</label>
+    <input type="text" name="telefon" class="form-control" id="telefon" value="<?php echo $_POST['telefon'] ?>"><br>
 
- <button type="submit" class="btn btn-primary">Submit</button>
+    <label for="form-password">Adres</label>
+    <input type="text" name="adres" class="form-control" id="adres" value="<?php echo $_POST['adres'] ?>"><br>
+
+    <input type="submit" value="<?php echo ('Dodaj'); ?>"></br>
              
 </form>

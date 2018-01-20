@@ -5,10 +5,7 @@
 
 <?php
 
-  console.log('przed config.php');
   require_once 'config.php';
-
-  console.log('Po dolaczeniu config.php');
 
 
   session_start();
@@ -16,28 +13,51 @@
 
   $show = $_GET['show'];
 
-
   include 'home.html';
 ?>
     <article class=".col-10" >
-      <div class="col-md-10">
+        <div class="col-md-10">
       <?php
-        if ($show == 'dodaj_ksiazke') {
+        if ($show == 'dodaj')
+        {
          include 'dodaj.php';
-       } ?> 
-      </div>
+       }
+        else if ($show == 'usun')
+        {
+            include 'usun.php';
+        }
+
+        else if ($show == 'lista')
+        {
+            include 'lista.php';
+        }
+
+      else if ($show == 'aktualizuj')
+      {
+          include 'aktualizuj.php';
+      }
+       ?>
 	
-	
-                
-                    
     </article>
             
+<style>
+    .stopka
+    {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #333333;
+        color: white;
+        text-align: center;
+        height:3%;
+        text-align: center;
+    }
 
-    <footer class=".col-12">
-                <p class="logo"> Logo</p>
+</style>
+    <footer class="stopka">
     </footer>
-        
-		</div>
-    </body>
+
+</body>
 </html>
 
